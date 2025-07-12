@@ -4,7 +4,7 @@
 *A sleek interface for managing products efficiently*  
 
 ## 🔗 Live Demo  
-👉 **[Click here to explore the live app](https://rajsingh89.github.io/Product-Managment-System/)**  
+👉 **[Click here to explore the live app](https://rajsingh89.github.io/Product-Managment-System/)** 
 
 ## 🚀 Key Features  
 - **CRUD Operations** - Add, view, edit, and delete products seamlessly  
