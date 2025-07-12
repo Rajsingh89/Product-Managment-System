@@ -1,6 +1,5 @@
 # 📦 Product Management System  
 
-![Project Preview](https://i.imgur.com/Jf5yZOt.png)  
 *A sleek interface for managing products efficiently*  
 
 ## 🔗 Live Demo  
