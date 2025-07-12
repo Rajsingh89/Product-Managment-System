@@ -20,7 +20,7 @@
 ```plaintext
 /
 ├── index.html          # Main application page  
-├── style.css           # Styling for the app  
-├── script.js           # Core functionality  
+             ├── style.css           # Styling for the app  
+             ├── script.js           # Core functionality  
 ├── assets/             # Images/icons  
 └── README.md           # You're here!  
