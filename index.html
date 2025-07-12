@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Manager - Ecommerce Backend</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: linear-gradient(135deg, #6f6fe5 0%, #8452b6 100%);
+          min-height: 100vh;
+          color: #333;
+          line-height: 1.6;
+        }
+
+        .container {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+
+        /* Header */
+        header {
+          text-align: center;
+          color: white;
+          margin-bottom: 40px;
+          padding: 20px 0;
+        }
+
+        header h1 {
+          font-size: 3rem;
+          margin-bottom: 10px;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          font-weight: 700;
+        }
+
+        header p {
+          font-size: 1.2rem;
+          opacity: 0.9;
+          font-weight: 300;
+        }
+
+        /* Stats Dashboard */
+        .stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+          margin-bottom: 40px;
+        }
+
+        .stat {
+          background: white;
+          padding: 25px;
+          border-radius: 15px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          display: flex;
+          align-items: center;
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+          font-size: 2.5rem;
+          margin-right: 20px;
+          width: 60px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #5d5fd7, #9661cb);
+        }
+
+        .stat-content h3 {
+          font-size: 2.2rem;
+          font-weight: 700;
+          margin-bottom: 5px;
+          color: #333;
+        }
+
+        .stat-content p {
+          color: #666;
+          font-size: 0.95rem;
+          font-weight: 500;
+        }
+
+        /* Controls */
+        .controls {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 30px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        .search-box {
+          flex: 1;
+          min-width: 300px;
+          position: relative;
+        }
+
+        #search {
+          width: 100%;
+          padding: 18px 20px;
+          border: none;
+          border-radius: 12px;
+          font-size: 1rem;
+          background: white;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+        }
+
+        #search:focus {
+          outline: none;
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+          border-color: #667eea;
+          transform: translateY(-2px);
+        }
+
+        /* Buttons */
+        .btn {
+          padding: 18px 30px;
+          border: none;
+          border-radius: 12px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          text-decoration: none;
+          position: relative;
+          overflow: hidden;
+        }   
+
+        .btn.primary {
+          background: linear-gradient(135deg, #5ed9b2, #4b9ca2);
+          color: white;
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.primary:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn.secondary {
+          background: #f8f9fa;
+          color: #666;
+          border: 2px solid #e9ecef;
+        }
+
+        .btn.secondary:hover {
+          background: #e9ecef;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn.edit {
+          background: linear-gradient(135deg, #28a745, #20c997);
+          color: white;
+          padding: 12px 20px;
+          font-size: 0.9rem;
+        }
+
+        .btn.delete {
+          background: linear-gradient(135deg, #dc3545, #e74c3c);
+          color: white;
+          padding: 12px 20px;
+          font-size: 0.9rem;
+        }
+
+        .btn.edit:hover,
+        .btn.delete:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Products Grid */
+        .products {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+          gap: 25px;
+          margin-bottom: 40px;
+        }
+
+        .product {
+          background: white;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .product:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+          position: relative;
+          height: 220px;
+          overflow: hidden;
+        }
+
+        .product img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .product:hover img {
+          transform: scale(1.05);
+        }
+
+        .stock-badge {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          padding: 8px 15px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: white;
+          backdrop-filter: blur(10px);
+        }
+
+        .stock-badge.in-stock {
+          background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .stock-badge.out-of-stock {
+          background: linear-gradient(135deg, #dc3545, #e74c3c);
+        }
+
+        .product-info {
+          padding: 25px;
+        }
+
+        .product h3 {
+          margin-bottom: 12px;
+          color: #333;
+          font-size: 1.4rem;
+          font-weight: 700;
+          line-height: 1.3;
+        }
+
+        .product p {
+          color: #666;
+          margin-bottom: 20px;
+          line-height: 1.5;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .product-meta {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .price {
+          font-size: 1.8rem;
+          font-weight: 700;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .category {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          color: #666;
+          padding: 8px 15px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .stock {
+          font-size: 0.9rem;
+          color: #666;
+          margin-bottom: 15px;
+          font-weight: 500;
+        }
+
+        .product-actions {
+          display: flex;
+          gap: 12px;
+        }
+
+        .product-actions .btn {
+          flex: 1;
+          padding: 12px;
+          font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1000;
+        }
+
+        .modal-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: white;
+          border-radius: 20px;
+          width: 90%;
+          max-width: 600px;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 30px 30px 20px;
+          border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+          color: #333;
+          font-size: 1.6rem;
+          font-weight: 700;
+        }
+
+        .close-btn {
+          background: none;
+          border: none;
+          font-size: 1.8rem;
+          cursor: pointer;
+          color: #666;
+          padding: 8px;
+          border-radius: 50%;
+          transition: all 0.3s ease;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .close-btn:hover {
+          background: #f8f9fa;
+          color: #333;
+          transform: rotate(90deg);
+        }
+
+        /* Form */
+        form {
+          padding: 30px;
+        }
+
+        .form-group {
+          margin-bottom: 25px;
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 600;
+          color: #333;
+          font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+          width: 100%;
+          padding: 15px;
+          border: 2px solid #e9ecef;
+          border-radius: 10px;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+          resize: vertical;
+          min-height: 100px;
+          line-height: 1.5;
+        }
+
+        .image-preview {
+          margin-top: 15px;
+          text-align: center;
+        }
+
+        .image-preview img {
+          max-width: 200px;
+          max-height: 200px;
+          border-radius: 10px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-actions {
+          display: flex;
+          gap: 15px;
+          justify-content: flex-end;
+          margin-top: 30px;
+          padding-top: 20px;
+          border-top: 1px solid #eee;
+        }
+
+        /* Loading */
+        .loading {
+          text-align: center;
+          color: white;
+          padding: 60px 20px;
+        }
+
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 4px solid rgba(255, 255, 255, 0.3);
+          border-top: 4px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        .btn-spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        /* Empty State */
+        .empty-state {
+          text-align: center;
+          color: white;
+          padding: 80px 20px;
+        }
+
+        .empty-icon {
+          font-size: 4rem;
+          margin-bottom: 20px;
+          opacity: 0.8;
+        }
+
+        .empty-state h3 {
+          font-size: 1.8rem;
+          margin-bottom: 10px;
+          font-weight: 600;
+        }
+
+        .empty-state p {
+          font-size: 1.1rem;
+          margin-bottom: 30px;
+          opacity: 0.9;
+        }
+
+        /* Toast Notification */
+        .toast {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          transform: translateX(400px);
+          transition: transform 0.3s ease;
+          z-index: 2000;
+          min-width: 300px;
+          border-left: 4px solid #28a745;
+        }
+
+        .toast.show {
+          transform: translateX(0);
+        }
+
+        .toast.error {
+          border-left-color: #dc3545;
+        }
+
+        .toast-content {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .toast-icon {
+          font-size: 1.2rem;
+        }
+
+        .toast-message {
+          font-weight: 500;
+          color: #333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .container {
+            padding: 15px;
+          }
+
+          header h1 {
+            font-size: 2.2rem;
+          }
+
+          header p {
+            font-size: 1rem;
+          }
+
+          .stats {
+            grid-template-columns: 1fr;
+          }
+
+          .stat {
+            padding: 20px;
+          }
+
+          .stat-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+          }
+
+          .controls {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .search-box {
+            min-width: auto;
+          }
+
+          .products {
+            grid-template-columns: 1fr;
+          }
+
+          .form-row {
+            grid-template-columns: 1fr;
+          }
+
+          .modal-content {
+            width: 95%;
+            margin: 20px;
+          }
+
+          .form-actions {
+            flex-direction: column;
+          }
+
+          .product-actions {
+            flex-direction: column;
+          }
+        }
+
+        @media (max-width: 480px) {
+          header h1 {
+            font-size: 1.8rem;
+          }
+
+          .stat-content h3 {
+            font-size: 1.8rem;
+          }
+
+          .btn {
+            padding: 15px 20px;
+          }
+
+          .modal-content {
+            padding: 0;
+          }
+
+          form {
+            padding: 20px;
+          }
+
+          .modal-header {
+            padding: 20px 20px 15px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🛍️ Product Manager</h1>
+            <p>Simple & powerful ecommerce product management system</p>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-content">
+                    <h3 id="totalProducts">0</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-content">
+                    <h3 id="totalValue">$0</h3>
+                    <p>Total Value</p>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-content">
+                    <h3 id="inStock">0</h3>
+                    <p>In Stock</p>
+                </div>
+            </div>
+            <div class="stat">
+                <div class="stat-content">
+                    <h3 id="outOfStock">0</h3>
+                    <p>Out of Stock</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="🔍 Search products by name, description, or category...">
+            </div>
+            <button id="addBtn" class="btn primary">
+                <span> Add New Product</span>
+            </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products" class="products"></div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-icon">📦</div>
+            <h3>No products found</h3>
+            <p>Start by adding your first product to the inventory</p>
+            <button class="btn primary" onclick="productManager.showModal()">
+                 Add Your First Product
+            </button>
+        </div>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">➕ Add New Product</h2>
+                <button id="closeModal" class="close-btn">✕</button>
+            </div>
+            
+            <form id="productForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">📝 Product Name *</label>
+                    <input type="text" id="name" name="name" placeholder="Enter product name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">📄 Description *</label>
+                    <textarea id="description" name="description" placeholder="Describe your product..." required></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">💰 Price ($) *</label>
+                        <input type="number" id="price" name="price" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">📦 Stock Quantity *</label>
+                        <input type="number" id="stock" name="stock" placeholder="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">🏷️ Category *</label>
+                    <input type="text" id="category" name="category" placeholder="e.g., Electronics, Sports, Accessories" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image">🖼️ Product Image</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="cancelBtn" class="btn secondary">Cancel</button>
+                    <button type="submit" id="submitBtn" class="btn primary">
+                        <span id="submitText">💾 Save Product</span>
+                        <div id="submitSpinner" class="btn-spinner" style="display: none;"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <span id="toastIcon" class="toast-icon"></span>
+            <span id="toastMessage" class="toast-message"></span>
+        </div>
+    </div>
+
+    <script>
+        // Mock database for client-side only version
+        const mockDatabase = {
+            products: [
+                {
+                    id: 1,
+                    name: "Wireless Headphones",
+                    description: "Premium wireless headphones with noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.",
+                    price: 199.99,
+                    category: "Electronics",
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop&crop=center",
+                    stock: 50,
+                    created_at: "2023-01-01T12:00:00Z"
+                },
+                {
+                    id: 2,
+                    name: "Smart Watch",
+                    description: "Feature-rich smartwatch with health monitoring, GPS tracking, and water resistance. Stay connected and healthy.",
+                    price: 299.99,
+                    category: "Electronics",
+                    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop&crop=center",
+                    stock: 30,
+                    created_at: "2023-01-02T12:00:00Z"
+                },
+                {
+                    id: 3,
+                    name: "Running Shoes",
+                    description: "Comfortable running shoes with advanced cushioning technology. Designed for all terrains and weather conditions.",
+                    price: 129.99,
+                    category: "Sports",
+                    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop&crop=center",
+                    stock: 75,
+                    created_at: "2023-01-03T12:00:00Z"
+                },
+                {
+                    id: 4,
+                    name: "Laptop Stand",
+                    description: "Adjustable aluminum laptop stand for better ergonomics and improved airflow. Compatible with all laptop sizes.",
+                    price: 49.99,
+                    category: "Accessories",
+                    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=300&fit=crop&crop=center",
+                    stock: 100,
+                    created_at: "2023-01-04T12:00:00Z"
+                },
+                {
+                    id: 5,
+                    name: "Bluetooth Speaker",
+                    description: "Portable wireless speaker with premium sound quality and 12-hour battery. Perfect for outdoor adventures.",
+                    price: 89.99,
+                    category: "Electronics",
+                    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop&crop=center",
+                    stock: 25,
+                    created_at: "2023-01-05T12:00:00Z"
+                },
+                {
+                    id: 6,
+                    name: "Gaming Mouse",
+                    description: "High-precision gaming mouse with RGB lighting and customizable buttons. Perfect for competitive gaming.",
+                    price: 79.99,
+                    category: "Electronics",
+                    image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=300&fit=crop&crop=center",
+                    stock: 40,
+                    created_at: "2023-01-06T12:00:00Z"
+                },
+                {
+                    id: 7,
+                    name: "Coffee Mug",
+                    description: "Premium ceramic coffee mug with ergonomic handle. Perfect for your morning coffee or tea.",
+                    price: 19.99,
+                    category: "Kitchen",
+                    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=300&fit=crop&crop=center",
+                    stock: 200,
+                    created_at: "2023-01-07T12:00:00Z"
+                },
+                {
+                    id: 8,
+                    name: "Backpack",
+                    description: "Durable travel backpack with multiple compartments and water-resistant material. Perfect for adventures.",
+                    price: 89.99,
+                    category: "Travel",
+                    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop&crop=center",
+                    stock: 60,
+                    created_at: "2023-01-08T12:00:00Z"
+                }
+            ],
+            nextId: 9
+        };
+
+        class ProductManager {
+          constructor() {
+            this.products = [];
+            this.currentEditId = null;
+            this.init();
+          }
+
+          init() {
+            this.bindEvents();
+            this.loadProducts();
+          }
+
+          bindEvents() {
+            document.getElementById("search").addEventListener("input", (e) => {
+              this.searchProducts(e.target.value);
+            });
+
+            document.getElementById("addBtn").addEventListener("click", () => {
+              this.showModal();
+            });
+
+            document.getElementById("closeModal").addEventListener("click", () => {
+              this.hideModal();
+            });
+
+            document.getElementById("cancelBtn").addEventListener("click", () => {
+              this.hideModal();
+            });
+
+            document.getElementById("productForm").addEventListener("submit", (e) => {
+              e.preventDefault();
+              this.saveProduct();
+            });
+
+            document.getElementById("image").addEventListener("change", (e) => {
+              this.previewImage(e.target.files[0]);
+            });
+
+            document.querySelector(".modal-overlay").addEventListener("click", () => {
+              this.hideModal();
+            });
+
+            document.querySelector(".modal-content").addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+          }
+
+          async loadProducts() {
+            try {
+              this.showLoading();
+              // Simulate API call delay
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              // Sort by created_at (newest first)
+              this.products = [...mockDatabase.products].sort((a, b) => 
+                new Date(b.created_at) - new Date(a.created_at)
+              );
+              
+              this.renderProducts();
+              this.updateStats();
+            } catch (error) {
+              console.error("Error loading products:", error);
+              this.showToast(" Error loading products. Please refresh the page.", "error");
+            } finally {
+              this.hideLoading();
+            }
+          }
+
+          async searchProducts(query) {
+            try {
+              // Simulate API call delay
+              await new Promise(resolve => setTimeout(resolve, 200));
+              
+              const lowerQuery = query.toLowerCase();
+              const filtered = mockDatabase.products.filter(product => 
+                product.name.toLowerCase().includes(lowerQuery) ||
+                product.description.toLowerCase().includes(lowerQuery) ||
+                product.category.toLowerCase().includes(lowerQuery)
+              );
+              
+              this.renderProducts(filtered);
+            } catch (error) {
+              console.error("Search error:", error);
+              this.showToast(" Search failed. Please try again.", "error");
+            }
+          }
+
+          renderProducts(products = this.products) {
+            const container = document.getElementById("products");
+            const emptyState = document.getElementById("emptyState");
+
+            if (products.length === 0) {
+              container.style.display = "none";
+              emptyState.style.display = "block";
+              return;
+            }
+
+            container.style.display = "grid";
+            emptyState.style.display = "none";
+
+            container.innerHTML = products
+              .map(
+                (product) => `
+              <div class="product">
+                <div class="product-image">
+                  <img src="${product.image || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&crop=center'}" 
+                       alt="${product.name}" 
+                       onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&crop=center'"
+                       loading="lazy">
+                  <div class="stock-badge ${product.stock > 0 ? "in-stock" : "out-of-stock"}">
+                    ${product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+                  </div>
+                </div>
+                <div class="product-info">
+                  <h3>${this.escapeHtml(product.name)}</h3>
+                  <p>${this.escapeHtml(product.description)}</p>
+                  <div class="product-meta">
+                    <span class="price">$${parseFloat(product.price).toFixed(2)}</span>
+                    <span class="category">${this.escapeHtml(product.category)}</span>
+                  </div>
+                  <div class="stock">📦 Stock: ${product.stock} units</div>
+                  <div class="product-actions">
+                    <button class="btn edit" onclick="productManager.editProduct(${product.id})">
+                       Edit
+                    </button>
+                    <button class="btn delete" onclick="productManager.deleteProduct(${product.id})">
+                       Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `
+              )
+              .join("");
+          }
+
+          updateStats() {
+            const total = this.products.length;
+            const totalValue = this.products.reduce((sum, p) => sum + parseFloat(p.price) * parseInt(p.stock), 0);
+            const inStock = this.products.filter((p) => p.stock > 0).length;
+            const outOfStock = this.products.filter((p) => p.stock === 0).length;
+
+            document.getElementById("totalProducts").textContent = total;
+            document.getElementById("totalValue").textContent = `$${totalValue.toLocaleString()}`;
+            document.getElementById("inStock").textContent = inStock;
+            document.getElementById("outOfStock").textContent = outOfStock;
+          }
+
+          showModal(product = null) {
+            const modal = document.getElementById("modal");
+            const form = document.getElementById("productForm");
+            const title = document.getElementById("modalTitle");
+            const submitText = document.getElementById("submitText");
+
+            if (product) {
+              this.currentEditId = product.id;
+              title.textContent = " Edit Product";
+              submitText.textContent = " Update Product";
+              this.populateForm(product);
+            } else {
+              this.currentEditId = null;
+              title.textContent = " Add New Product";
+              submitText.textContent = " Save Product";
+              form.reset();
+              document.getElementById("imagePreview").innerHTML = "";
+            }
+
+            modal.style.display = "block";
+            document.body.style.overflow = "hidden";
+
+            // Focus on first input
+            setTimeout(() => {
+              document.getElementById("name").focus();
+            }, 100);
+          }
+
+          hideModal() {
+            const modal = document.getElementById("modal");
+            modal.style.display = "none";
+            document.body.style.overflow = "auto";
+            this.currentEditId = null;
+          }
+
+          populateForm(product) {
+            document.getElementById("name").value = product.name;
+            document.getElementById("description").value = product.description;
+            document.getElementById("price").value = product.price;
+            document.getElementById("category").value = product.category;
+            document.getElementById("stock").value = product.stock;
+
+            if (product.image) {
+              document.getElementById("imagePreview").innerHTML = `
+                <img src="${product.image}" alt="Current product image" loading="lazy">
+                <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">Current image</p>
+              `;
+            }
+          }
+
+          async saveProduct() {
+            const form = document.getElementById("productForm");
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById("submitBtn");
+            const submitText = document.getElementById("submitText");
+            const spinner = document.getElementById("submitSpinner");
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.style.display = "none";
+            spinner.style.display = "inline-block";
+
+            try {
+              // Simulate API call delay
+              await new Promise(resolve => setTimeout(resolve, 800));
+              
+              const productData = {
+                name: formData.get("name"),
+                description: formData.get("description"),
+                price: parseFloat(formData.get("price")),
+                category: formData.get("category"),
+                stock: parseInt(formData.get("stock") || 0),
+                image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&crop=center",
+                created_at: new Date().toISOString()
+              };
+
+              // Handle image upload (in a real app, this would upload to a server)
+              const imageFile = formData.get("image");
+              if (imageFile && imageFile.size > 0) {
+                // In a client-side only version, we can't actually save the image
+                // So we'll just use a placeholder or show a preview
+                productData.image = URL.createObjectURL(imageFile);
+              }
+
+              if (this.currentEditId) {
+                // Update existing product
+                const index = mockDatabase.products.findIndex(p => p.id === this.currentEditId);
+                if (index !== -1) {
+                  mockDatabase.products[index] = { 
+                    ...mockDatabase.products[index], 
+                    ...productData 
+                  };
+                }
+              } else {
+                // Add new product
+                productData.id = mockDatabase.nextId++;
+                mockDatabase.products.push(productData);
+              }
+
+              const message = this.currentEditId ? " Product updated successfully!" : " Product added successfully!";
+              this.showToast(message, "success");
+              this.hideModal();
+              await this.loadProducts();
+            } catch (error) {
+              console.error("Save error:", error);
+              this.showToast(` Error: ${error.message}`, "error");
+            } finally {
+              // Reset loading state
+              submitBtn.disabled = false;
+              submitText.style.display = "inline";
+              spinner.style.display = "none";
+            }
+          }
+
+          editProduct(id) {
+            const product = this.products.find((p) => p.id === id);
+            if (product) {
+              this.showModal(product);
+            }
+          }
+
+          async deleteProduct(id) {
+            const product = this.products.find((p) => p.id === id);
+            if (!product) return;
+
+            const confirmMessage = `Are you sure you want to delete "${product.name}"?\n\nThis action cannot be undone.`;
+            if (!confirm(confirmMessage)) return;
+
+            try {
+              // Simulate API call delay
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              mockDatabase.products = mockDatabase.products.filter(p => p.id !== id);
+              
+              this.showToast(" Product deleted successfully!", "success");
+              await this.loadProducts();
+            } catch (error) {
+              console.error("Delete error:", error);
+              this.showToast(` Error deleting product: ${error.message}`, "error");
+            }
+          }
+
+          previewImage(file) {
+            const preview = document.getElementById("imagePreview");
+
+            if (file) {
+              // Validate file type
+              if (!file.type.startsWith("image/")) {
+                this.showToast(" Please select a valid image file", "error");
+                return;
+              }
+
+              // Validate file size (5MB)
+              if (file.size > 5 * 1024 * 1024) {
+                this.showToast(" Image size must be less than 5MB", "error");
+                return;
+              }
+
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                preview.innerHTML = `
+                  <img src="${e.target.result}" alt="Preview">
+                  <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">New image preview</p>
+                `;
+              };
+              reader.readAsDataURL(file);
+            } else {
+              preview.innerHTML = "";
+            }
+          }
+
+          showLoading() {
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("products").style.display = "none";
+            document.getElementById("emptyState").style.display = "none";
+          }
+
+          hideLoading() {
+            document.getElementById("loading").style.display = "none";
+          }
+
+          showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            const icon = document.getElementById("toastIcon");
+            const messageEl = document.getElementById("toastMessage");
+
+            // Set content
+            messageEl.textContent = message;
+            icon.textContent = type === "success" ? "✓" : "✗";
+
+            // Set class
+            toast.className = `toast ${type}`;
+
+            // Show toast
+            toast.classList.add("show");
+
+            // Hide after 4 seconds
+            setTimeout(() => {
+              toast.classList.remove("show");
+            }, 4000);
+          }
+
+          escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+          }
+        }
+
+        // Initialize the application
+        const productManager = new ProductManager();
+
+        // Global function for onclick handlers
+        function showProductForm() {
+          productManager.showModal();
+        }
+    </script>
+</body>
+</html>
